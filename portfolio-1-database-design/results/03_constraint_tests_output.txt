@@ -1,0 +1,21 @@
+--- Test 1: negative balance (CHECK balance >= 0)
+psql:sql/03_constraint_tests.sql:5: ERROR:  new row for relation "accounts" violates check constraint "accounts_balance_check"
+DETAIL:  Failing row contains (1, 1, 3000000001, WALLET, -500.00, ACTIVE, 2026-06-06 12:33:10.425328+01).
+--- Test 2: duplicate email (UNIQUE)
+psql:sql/03_constraint_tests.sql:8: ERROR:  duplicate key value violates unique constraint "customers_email_key"
+DETAIL:  Key (email)=(segun.eze1@mail.ng) already exists.
+--- Test 3: invalid Nigerian phone format (CHECK regex)
+psql:sql/03_constraint_tests.sql:11: ERROR:  new row for relation "customers" violates check constraint "customers_phone_check"
+DETAIL:  Failing row contains (2005, Test, User, test@mail.ng, 08012345678, 1990-01-01, 1, 1, 2026-11-09 15:30:30.206639+01).
+--- Test 4: under-18 customer (CHECK date_of_birth)
+psql:sql/03_constraint_tests.sql:14: ERROR:  new row for relation "customers" violates check constraint "customers_date_of_birth_check"
+DETAIL:  Failing row contains (2006, Young, User, young@mail.ng, +2348011111111, 2015-05-05, 1, 1, 2026-11-09 15:30:30.206887+01).
+--- Test 5: account for non-existent customer (FOREIGN KEY)
+psql:sql/03_constraint_tests.sql:16: ERROR:  insert or update on table "accounts" violates foreign key constraint "accounts_customer_id_fkey"
+DETAIL:  Key (customer_id)=(99999) is not present in table "customers".
+--- Test 6: transfer to the same account (CHECK from <> to)
+psql:sql/03_constraint_tests.sql:18: ERROR:  new row for relation "transfers" violates check constraint "transfers_check"
+DETAIL:  Failing row contains (2, 1, 1, 1000.00, PENDING, 4c626afb-83d1-4a5c-a41a-a685fc3843d7, 2026-11-09 15:30:30.20765+01).
+--- Test 7: delete a customer who still has accounts (ON DELETE RESTRICT)
+psql:sql/03_constraint_tests.sql:20: ERROR:  update or delete on table "customers" violates foreign key constraint "accounts_customer_id_fkey" on table "accounts"
+DETAIL:  Key (customer_id)=(1) is still referenced from table "accounts".

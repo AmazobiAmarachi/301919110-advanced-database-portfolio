@@ -1,0 +1,7 @@
+  table_name  | count  
+--------------+--------
+ customers    |   2000
+ accounts     |   2987
+ transactions | 200000
+(3 rows)
+

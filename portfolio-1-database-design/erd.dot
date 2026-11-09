@@ -1,0 +1,50 @@
+digraph ERD {
+  graph [rankdir=LR, splines=spline, nodesep=0.5, ranksep=0.9, fontname="Helvetica", bgcolor="white", pad=0.3];
+  node  [shape=plain, fontname="Helvetica", fontsize=10];
+  edge  [fontname="Helvetica", fontsize=9, color="#4a5568", arrowsize=0.8];
+
+  regions [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4" color="#2b6cb0">
+   <tr><td bgcolor="#2b6cb0"><font color="white"><b>REGIONS</b></font></td></tr>
+   <tr><td align="left"><u>region_id</u> PK</td></tr><tr><td align="left">region_name UQ</td></tr><tr><td align="left">zone</td></tr></table>>];
+  staff [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4" color="#2b6cb0">
+   <tr><td bgcolor="#2b6cb0"><font color="white"><b>STAFF</b></font></td></tr>
+   <tr><td align="left"><u>staff_id</u> PK</td></tr><tr><td align="left">full_name</td></tr><tr><td align="left">email UQ</td></tr><tr><td align="left">role</td></tr><tr><td align="left"><i>region_id</i> FK</td></tr></table>>];
+  customers [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4" color="#2b6cb0">
+   <tr><td bgcolor="#2b6cb0"><font color="white"><b>CUSTOMERS</b></font></td></tr>
+   <tr><td align="left"><u>customer_id</u> PK</td></tr><tr><td align="left">first_name, last_name</td></tr><tr><td align="left">email UQ, phone UQ</td></tr><tr><td align="left">date_of_birth</td></tr><tr><td align="left">kyc_tier</td></tr><tr><td align="left"><i>region_id</i> FK</td></tr></table>>];
+  kyc [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4" color="#2b6cb0">
+   <tr><td bgcolor="#2b6cb0"><font color="white"><b>KYC_DOCUMENTS</b></font></td></tr>
+   <tr><td align="left"><u>doc_id</u> PK</td></tr><tr><td align="left"><i>customer_id</i> FK</td></tr><tr><td align="left">doc_type, doc_ref (UQ)</td></tr><tr><td align="left">status</td></tr><tr><td align="left"><i>verified_by</i> FK</td></tr></table>>];
+  accounts [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4" color="#2b6cb0">
+   <tr><td bgcolor="#2b6cb0"><font color="white"><b>ACCOUNTS</b></font></td></tr>
+   <tr><td align="left"><u>account_id</u> PK</td></tr><tr><td align="left"><i>customer_id</i> FK</td></tr><tr><td align="left">account_number UQ</td></tr><tr><td align="left">account_type</td></tr><tr><td align="left">balance (&gt;= 0)</td></tr><tr><td align="left">status</td></tr></table>>];
+  cards [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4" color="#2b6cb0">
+   <tr><td bgcolor="#2b6cb0"><font color="white"><b>CARDS</b></font></td></tr>
+   <tr><td align="left"><u>card_id</u> PK</td></tr><tr><td align="left"><i>account_id</i> FK</td></tr><tr><td align="left">masked_pan</td></tr><tr><td align="left">expiry, status</td></tr></table>>];
+  transfers [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4" color="#2b6cb0">
+   <tr><td bgcolor="#2b6cb0"><font color="white"><b>TRANSFERS</b></font></td></tr>
+   <tr><td align="left"><u>transfer_id</u> PK</td></tr><tr><td align="left"><i>from_account</i> FK</td></tr><tr><td align="left"><i>to_account</i> FK</td></tr><tr><td align="left">amount, status</td></tr><tr><td align="left">reference UQ</td></tr></table>>];
+  transactions [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4" color="#2b6cb0">
+   <tr><td bgcolor="#2b6cb0"><font color="white"><b>TRANSACTIONS</b></font></td></tr>
+   <tr><td align="left"><u>txn_id</u> PK</td></tr><tr><td align="left"><i>account_id</i> FK</td></tr><tr><td align="left">txn_type, direction</td></tr><tr><td align="left">amount, status, channel</td></tr><tr><td align="left"><i>merchant_id</i> FK (null)</td></tr><tr><td align="left"><i>transfer_id</i> FK (null)</td></tr><tr><td align="left">created_at</td></tr></table>>];
+  merchants [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4" color="#2b6cb0">
+   <tr><td bgcolor="#2b6cb0"><font color="white"><b>MERCHANTS</b></font></td></tr>
+   <tr><td align="left"><u>merchant_id</u> PK</td></tr><tr><td align="left">name, category</td></tr><tr><td align="left"><i>region_id</i> FK</td></tr></table>>];
+  audit [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4" color="#718096">
+   <tr><td bgcolor="#718096"><font color="white"><b>AUDIT_LOG</b></font></td></tr>
+   <tr><td align="left"><u>audit_id</u> PK</td></tr><tr><td align="left">table_name, record_id</td></tr><tr><td align="left">old_data, new_data (JSONB)</td></tr><tr><td align="left">changed_by, changed_at</td></tr></table>>];
+
+  regions -> customers [label="1 : N  lives in", dir=none];
+  regions -> staff [label="1 : N", dir=none];
+  regions -> merchants [label="1 : N", dir=none];
+  customers -> accounts [label="1 : N  owns", dir=none];
+  customers -> kyc [label="1 : N  submits", dir=none];
+  staff -> kyc [label="1 : N  verifies", dir=none, style=dashed];
+  accounts -> cards [label="1 : N", dir=none];
+  accounts -> transactions [label="1 : N  posts", dir=none];
+  accounts -> transfers [label="1 : N  sends", dir=none];
+  accounts -> transfers [label="1 : N  receives", dir=none];
+  transfers -> transactions [label="1 : 2  (DR + CR)", dir=none];
+  merchants -> transactions [label="1 : N  (POS)", dir=none];
+  accounts -> audit [label="trigger", style=dotted, dir=forward];
+}
