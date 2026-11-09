@@ -1,0 +1,7 @@
+-- pgbench script: same workload via transfer_funds(), which locks rows in account_id order
+\set dir random(0, 1)
+\if :dir = 0
+CALL transfer_funds(101, 102, 100);
+\else
+CALL transfer_funds(102, 101, 100);
+\endif

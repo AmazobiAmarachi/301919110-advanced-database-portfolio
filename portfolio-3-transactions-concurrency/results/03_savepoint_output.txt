@@ -1,0 +1,22 @@
+BEGIN;
+BEGIN
+UPDATE accounts SET balance = balance - 2000 WHERE account_id = 101;
+UPDATE 1
+UPDATE accounts SET balance = balance + 2000 WHERE account_id = 102;
+UPDATE 1
+SAVEPOINT before_fee;
+SAVEPOINT
+INSERT INTO transactions(account_id, txn_type, direction, amount, channel) VALUES (999999,'BILL','CR',50,'APP');
+psql:sql/03_savepoint.sql:7: ERROR:  insert or update on table "transactions" violates foreign key constraint "transactions_account_id_fkey"
+DETAIL:  Key (account_id)=(999999) is not present in table "accounts".
+ROLLBACK TO SAVEPOINT before_fee;
+ROLLBACK
+COMMIT;
+COMMIT
+SELECT account_id, balance FROM accounts WHERE account_id IN (101,102) ORDER BY 1;
+ account_id | balance  
+------------+----------
+        101 | 38000.00
+        102 | 62000.00
+(2 rows)
+

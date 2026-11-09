@@ -1,0 +1,11 @@
+-- pgbench script: random-direction transfer between accounts 101 and 102, locks rows in the ORDER of the transfer
+\set dir random(0, 1)
+BEGIN;
+\if :dir = 0
+UPDATE accounts SET balance = balance - 100 WHERE account_id = 101;
+UPDATE accounts SET balance = balance + 100 WHERE account_id = 102;
+\else
+UPDATE accounts SET balance = balance - 100 WHERE account_id = 102;
+UPDATE accounts SET balance = balance + 100 WHERE account_id = 101;
+\endif
+END;

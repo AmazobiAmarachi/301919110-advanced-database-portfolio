@@ -1,0 +1,7 @@
+SELECT account_id, balance AS final_balance FROM accounts WHERE account_id IN (101,102) ORDER BY 1;
+ account_id | final_balance 
+------------+---------------
+        101 |      35000.00
+        102 |      50000.00
+(2 rows)
+

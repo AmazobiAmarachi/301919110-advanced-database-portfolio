@@ -1,0 +1,22 @@
+BEGIN ISOLATION LEVEL READ COMMITTED;
+BEGIN
+SELECT 'first read' AS read, balance FROM accounts WHERE account_id = 101;
+    read    | balance  
+------------+----------
+ first read | 50000.00
+(1 row)
+
+SELECT pg_sleep(2);
+ pg_sleep 
+----------
+ 
+(1 row)
+
+SELECT 'second read' AS read, balance FROM accounts WHERE account_id = 101;
+    read     | balance  
+-------------+----------
+ second read | 49000.00
+(1 row)
+
+COMMIT;
+COMMIT

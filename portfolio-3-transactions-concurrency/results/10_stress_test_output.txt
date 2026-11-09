@@ -1,0 +1,24 @@
+===== naive_transfer
+number of clients: 8
+number of transactions actually processed: 66/320
+number of failed transactions: 254 (79.375%)
+number of serialization failures: 0 (0.000%)
+number of deadlock failures: 254 (79.375%)
+tps = 0.375851 (without initial connection time)
+ total_money_101_plus_102 
+--------------------------
+                100000.00
+(1 row)
+
+===== procedure_transfer
+number of clients: 8
+number of transactions actually processed: 320/320
+number of failed transactions: 0 (0.000%)
+number of serialization failures: 0 (0.000%)
+number of deadlock failures: 0 (0.000%)
+tps = 833.274744 (without initial connection time)
+ total_money_101_plus_102 
+--------------------------
+                100000.00
+(1 row)
+

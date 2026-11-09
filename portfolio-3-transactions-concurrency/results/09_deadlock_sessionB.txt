@@ -1,0 +1,26 @@
+SELECT pg_sleep(0.3);
+ pg_sleep 
+----------
+ 
+(1 row)
+
+BEGIN;
+BEGIN
+UPDATE accounts SET balance = balance - 1000 WHERE account_id = 102;
+UPDATE 1
+SELECT pg_sleep(1);
+ pg_sleep 
+----------
+ 
+(1 row)
+
+SELECT to_char(clock_timestamp(),'HH24:MI:SS.MS') AS "time", 'B now wants row 101' AS step;
+     time     |        step         
+--------------+---------------------
+ 21:23:22.540 | B now wants row 101
+(1 row)
+
+UPDATE accounts SET balance = balance + 1000 WHERE account_id = 101;
+UPDATE 1
+COMMIT;
+COMMIT

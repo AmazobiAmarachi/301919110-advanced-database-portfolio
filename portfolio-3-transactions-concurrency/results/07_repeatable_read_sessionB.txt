@@ -1,0 +1,31 @@
+SELECT pg_sleep(0.5);
+ pg_sleep 
+----------
+ 
+(1 row)
+
+BEGIN ISOLATION LEVEL REPEATABLE READ;
+BEGIN
+SELECT balance FROM accounts WHERE account_id = 101;
+ balance  
+----------
+ 50000.00
+(1 row)
+
+SELECT to_char(clock_timestamp(),'HH24:MI:SS.MS') AS "time", 'B tries to update (blocks until A finishes)' AS step;
+     time     |                    step                     
+--------------+---------------------------------------------
+ 21:23:13.354 | B tries to update (blocks until A finishes)
+(1 row)
+
+UPDATE accounts SET balance = balance - 5000 WHERE account_id = 101;
+psql:sql/concurrency/07_repeatable_read_B.sql:6: ERROR:  could not serialize access due to concurrent update
+ROLLBACK;
+ROLLBACK
+B: application catches SQLSTATE 40001 and RETRIES the whole transaction:
+BEGIN ISOLATION LEVEL REPEATABLE READ;
+BEGIN
+UPDATE accounts SET balance = balance - 5000 WHERE account_id = 101;
+UPDATE 1
+COMMIT;
+COMMIT

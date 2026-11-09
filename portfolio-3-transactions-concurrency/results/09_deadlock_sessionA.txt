@@ -1,0 +1,24 @@
+BEGIN;
+BEGIN
+UPDATE accounts SET balance = balance - 1000 WHERE account_id = 101;
+UPDATE 1
+SELECT pg_sleep(1);
+ pg_sleep 
+----------
+ 
+(1 row)
+
+SELECT to_char(clock_timestamp(),'HH24:MI:SS.MS') AS "time", 'A now wants row 102' AS step;
+     time     |        step         
+--------------+---------------------
+ 21:23:22.210 | A now wants row 102
+(1 row)
+
+UPDATE accounts SET balance = balance + 1000 WHERE account_id = 102;
+psql:sql/concurrency/09_deadlock_A.sql:6: ERROR:  deadlock detected
+DETAIL:  Process 35384 waits for ShareLock on transaction 916; blocked by process 33552.
+Process 33552 waits for ShareLock on transaction 915; blocked by process 35384.
+HINT:  See server log for query details.
+CONTEXT:  while updating tuple (30,85) in relation "accounts"
+COMMIT;
+ROLLBACK

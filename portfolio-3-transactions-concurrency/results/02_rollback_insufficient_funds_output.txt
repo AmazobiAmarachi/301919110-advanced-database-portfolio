@@ -1,0 +1,23 @@
+SELECT account_id, balance FROM accounts WHERE account_id IN (101,102) ORDER BY 1;
+ account_id | balance  
+------------+----------
+        101 | 40000.00
+        102 | 60000.00
+(2 rows)
+
+BEGIN;
+BEGIN
+UPDATE accounts SET balance = balance + 100000 WHERE account_id = 102;
+UPDATE 1
+UPDATE accounts SET balance = balance - 100000 WHERE account_id = 101;
+psql:sql/02_rollback_insufficient_funds.sql:6: ERROR:  new row for relation "accounts" violates check constraint "accounts_balance_check"
+DETAIL:  Failing row contains (101, 101, 3000000101, WALLET, -60000.00, ACTIVE, 2026-01-31 03:21:27.826256+01).
+COMMIT;
+ROLLBACK
+SELECT account_id, balance FROM accounts WHERE account_id IN (101,102) ORDER BY 1;
+ account_id | balance  
+------------+----------
+        101 | 40000.00
+        102 | 60000.00
+(2 rows)
+
