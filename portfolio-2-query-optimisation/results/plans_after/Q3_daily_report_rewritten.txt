@@ -1,0 +1,11 @@
+Bitmap Heap Scan on transactions  (cost=4.48..72.16 rows=18 width=24) (actual time=0.045..0.131 rows=17 loops=1)
+  Recheck Cond: ((created_at >= (CURRENT_DATE - 7)) AND (created_at < (CURRENT_DATE - 6)) AND ((status)::text = 'FAILED'::text))
+  Heap Blocks: exact=17
+  Buffers: shared hit=22
+  ->  Bitmap Index Scan on idx_txn_failed_created  (cost=0.00..4.47 rows=18 width=0) (actual time=0.036..0.036 rows=17 loops=1)
+        Index Cond: ((created_at >= (CURRENT_DATE - 7)) AND (created_at < (CURRENT_DATE - 6)))
+        Buffers: shared hit=5
+Planning:
+  Buffers: shared hit=140
+Planning Time: 0.571 ms
+Execution Time: 0.211 ms

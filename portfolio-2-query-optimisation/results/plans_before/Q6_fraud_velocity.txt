@@ -1,0 +1,29 @@
+Sort  (cost=5678.89..5679.25 rows=145 width=44) (actual time=40.838..44.850 rows=2 loops=1)
+  Sort Key: (count(*)) DESC
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=2302
+  ->  Finalize GroupAggregate  (cost=5627.14..5673.69 rows=145 width=44) (actual time=40.585..44.839 rows=2 loops=1)
+        Group Key: account_id
+        Filter: (count(*) >= 3)
+        Rows Removed by Filter: 464
+        Buffers: shared hit=2299
+        ->  Gather Merge  (cost=5627.14..5664.40 rows=276 width=44) (actual time=40.430..44.656 rows=466 loops=1)
+              Workers Planned: 1
+              Workers Launched: 1
+              Buffers: shared hit=2299
+              ->  Partial GroupAggregate  (cost=4627.13..4633.34 rows=276 width=44) (actual time=9.632..9.726 rows=233 loops=2)
+                    Group Key: account_id
+                    Buffers: shared hit=2299
+                    ->  Sort  (cost=4627.13..4627.82 rows=276 width=12) (actual time=9.624..9.637 rows=255 loops=2)
+                          Sort Key: account_id
+                          Sort Method: quicksort  Memory: 44kB
+                          Buffers: shared hit=2299
+                          Worker 0:  Sort Method: quicksort  Memory: 25kB
+                          ->  Parallel Seq Scan on transactions  (cost=0.00..4615.94 rows=276 width=12) (actual time=0.080..9.536 rows=255 loops=2)
+                                Filter: (((status)::text = 'FAILED'::text) AND (created_at >= (now() - '30 days'::interval)))
+                                Rows Removed by Filter: 99745
+                                Buffers: shared hit=2263
+Planning:
+  Buffers: shared hit=120
+Planning Time: 0.415 ms
+Execution Time: 44.905 ms

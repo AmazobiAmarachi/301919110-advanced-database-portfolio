@@ -1,0 +1,32 @@
+Gather Merge  (cost=4959.12..4963.60 rows=39 width=46) (actual time=41.945..46.789 rows=122 loops=1)
+  Workers Planned: 1
+  Workers Launched: 1
+  Buffers: shared hit=2305
+  ->  Sort  (cost=3959.11..3959.21 rows=39 width=46) (actual time=10.377..10.384 rows=61 loops=2)
+        Sort Key: t.created_at DESC
+        Sort Method: quicksort  Memory: 34kB
+        Buffers: shared hit=2305
+        Worker 0:  Sort Method: quicksort  Memory: 25kB
+        ->  Hash Join  (cost=77.04..3958.08 rows=39 width=46) (actual time=0.215..10.339 rows=61 loops=2)
+              Hash Cond: (t.account_id = a.account_id)
+              Buffers: shared hit=2297
+              ->  Parallel Seq Scan on transactions t  (cost=0.00..3439.47 rows=117647 width=27) (actual time=0.002..4.727 rows=100000 loops=2)
+                    Buffers: shared hit=2263
+              ->  Hash  (cost=77.03..77.03 rows=1 width=27) (actual time=0.315..0.317 rows=2 loops=1)
+                    Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                    Buffers: shared hit=34
+                    ->  Hash Join  (cost=8.31..77.03 rows=1 width=27) (actual time=0.156..0.314 rows=2 loops=1)
+                          Hash Cond: (a.customer_id = c.customer_id)
+                          Buffers: shared hit=34
+                          ->  Seq Scan on accounts a  (cost=0.00..60.87 rows=2987 width=19) (actual time=0.007..0.135 rows=2987 loops=1)
+                                Buffers: shared hit=31
+                          ->  Hash  (cost=8.29..8.29 rows=1 width=16) (actual time=0.030..0.031 rows=1 loops=1)
+                                Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                                Buffers: shared hit=3
+                                ->  Index Scan using customers_phone_key on customers c  (cost=0.28..8.29 rows=1 width=16) (actual time=0.025..0.026 rows=1 loops=1)
+                                      Index Cond: ((phone)::text = '+2347000001234'::text)
+                                      Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=331
+Planning Time: 0.818 ms
+Execution Time: 46.860 ms

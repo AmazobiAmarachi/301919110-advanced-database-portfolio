@@ -1,0 +1,21 @@
+Sort  (cost=24.96..25.13 rows=67 width=46) (actual time=0.421..0.425 rows=122 loops=1)
+  Sort Key: t.created_at DESC
+  Sort Method: quicksort  Memory: 34kB
+  Buffers: shared hit=139
+  ->  Nested Loop  (cost=0.98..22.93 rows=67 width=46) (actual time=0.053..0.382 rows=122 loops=1)
+        Buffers: shared hit=136
+        ->  Nested Loop  (cost=0.56..16.60 rows=1 width=27) (actual time=0.035..0.037 rows=2 loops=1)
+              Buffers: shared hit=7
+              ->  Index Scan using customers_phone_key on customers c  (cost=0.28..8.29 rows=1 width=16) (actual time=0.021..0.021 rows=1 loops=1)
+                    Index Cond: ((phone)::text = '+2347000001234'::text)
+                    Buffers: shared hit=3
+              ->  Index Scan using idx_accounts_customer on accounts a  (cost=0.28..8.30 rows=1 width=19) (actual time=0.011..0.013 rows=2 loops=1)
+                    Index Cond: (customer_id = c.customer_id)
+                    Buffers: shared hit=4
+        ->  Index Scan using idx_txn_account_created on transactions t  (cost=0.42..5.66 rows=67 width=27) (actual time=0.012..0.165 rows=61 loops=2)
+              Index Cond: (account_id = a.account_id)
+              Buffers: shared hit=129
+Planning:
+  Buffers: shared hit=400
+Planning Time: 1.122 ms
+Execution Time: 0.458 ms

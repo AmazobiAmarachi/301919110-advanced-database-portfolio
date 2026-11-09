@@ -1,0 +1,15 @@
+Sort  (cost=65.19..65.23 rows=16 width=45) (actual time=0.091..0.091 rows=12 loops=1)
+  Sort Key: created_at DESC
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=18
+  ->  Bitmap Heap Scan on transactions  (cost=4.59..64.87 rows=16 width=45) (actual time=0.025..0.073 rows=12 loops=1)
+        Recheck Cond: ((account_id = 1450) AND (created_at >= (now() - '90 days'::interval)))
+        Heap Blocks: exact=12
+        Buffers: shared hit=15
+        ->  Bitmap Index Scan on idx_txn_account_created  (cost=0.00..4.58 rows=16 width=0) (actual time=0.018..0.018 rows=12 loops=1)
+              Index Cond: ((account_id = 1450) AND (created_at >= (now() - '90 days'::interval)))
+              Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=165
+Planning Time: 0.455 ms
+Execution Time: 0.126 ms

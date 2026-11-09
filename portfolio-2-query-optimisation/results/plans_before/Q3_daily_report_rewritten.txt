@@ -1,0 +1,12 @@
+Gather  (cost=1000.00..6499.89 rows=16 width=24) (actual time=1.331..48.251 rows=17 loops=1)
+  Workers Planned: 1
+  Workers Launched: 1
+  Buffers: shared hit=2263
+  ->  Parallel Seq Scan on transactions  (cost=0.00..5498.29 rows=9 width=24) (actual time=0.510..10.645 rows=8 loops=2)
+        Filter: (((status)::text = 'FAILED'::text) AND (created_at >= (CURRENT_DATE - 7)) AND (created_at < (CURRENT_DATE - 6)))
+        Rows Removed by Filter: 99992
+        Buffers: shared hit=2263
+Planning:
+  Buffers: shared hit=86
+Planning Time: 0.337 ms
+Execution Time: 48.317 ms

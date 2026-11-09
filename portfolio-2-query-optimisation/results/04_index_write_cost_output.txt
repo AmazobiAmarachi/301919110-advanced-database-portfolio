@@ -1,0 +1,51 @@
+Timing is on.
+--- WITH indexes
+BEGIN
+Time: 0.151 ms
+INSERT 0 50000
+Time: 471.650 ms
+ROLLBACK
+Time: 0.241 ms
+--- WITHOUT indexes (dropped inside the transaction)
+BEGIN
+Time: 0.081 ms
+DROP INDEX
+Time: 1.282 ms
+INSERT 0 50000
+Time: 357.579 ms
+ROLLBACK
+Time: 0.588 ms
+Timing is on.
+--- WITH indexes
+BEGIN
+Time: 0.121 ms
+INSERT 0 50000
+Time: 471.087 ms
+ROLLBACK
+Time: 0.159 ms
+--- WITHOUT indexes (dropped inside the transaction)
+BEGIN
+Time: 0.049 ms
+DROP INDEX
+Time: 0.777 ms
+INSERT 0 50000
+Time: 364.855 ms
+ROLLBACK
+Time: 0.395 ms
+Timing is on.
+--- WITH indexes
+BEGIN
+Time: 0.100 ms
+INSERT 0 50000
+Time: 567.948 ms
+ROLLBACK
+Time: 0.485 ms
+--- WITHOUT indexes (dropped inside the transaction)
+BEGIN
+Time: 0.391 ms
+DROP INDEX
+Time: 1.609 ms
+INSERT 0 50000
+Time: 391.774 ms
+ROLLBACK
+Time: 0.481 ms

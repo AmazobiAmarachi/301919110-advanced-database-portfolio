@@ -1,0 +1,18 @@
+Sort  (cost=41.57..41.95 rows=155 width=44) (actual time=0.396..0.397 rows=2 loops=1)
+  Sort Key: (count(*)) DESC
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=9
+  ->  HashAggregate  (cost=28.94..35.93 rows=155 width=44) (actual time=0.311..0.378 rows=2 loops=1)
+        Group Key: account_id
+        Filter: (count(*) >= 3)
+        Batches: 1  Memory Usage: 297kB
+        Rows Removed by Filter: 464
+        Buffers: shared hit=6
+        ->  Index Only Scan using idx_txn_failed_created on transactions  (cost=0.29..25.14 rows=506 width=12) (actual time=0.058..0.105 rows=510 loops=1)
+              Index Cond: (created_at >= (now() - '30 days'::interval))
+              Heap Fetches: 0
+              Buffers: shared hit=6
+Planning:
+  Buffers: shared hit=179
+Planning Time: 0.561 ms
+Execution Time: 0.466 ms

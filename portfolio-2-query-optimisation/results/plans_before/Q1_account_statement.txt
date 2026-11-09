@@ -1,0 +1,17 @@
+Gather Merge  (cost=5616.09..5617.13 rows=9 width=45) (actual time=42.474..46.548 rows=12 loops=1)
+  Workers Planned: 1
+  Workers Launched: 1
+  Buffers: shared hit=2300
+  ->  Sort  (cost=4616.08..4616.11 rows=9 width=45) (actual time=8.191..8.193 rows=6 loops=2)
+        Sort Key: created_at DESC
+        Sort Method: quicksort  Memory: 25kB
+        Buffers: shared hit=2300
+        Worker 0:  Sort Method: quicksort  Memory: 25kB
+        ->  Parallel Seq Scan on transactions  (cost=0.00..4615.94 rows=9 width=45) (actual time=0.332..8.162 rows=6 loops=2)
+              Filter: ((account_id = 1450) AND (created_at >= (now() - '90 days'::interval)))
+              Rows Removed by Filter: 99994
+              Buffers: shared hit=2263
+Planning:
+  Buffers: shared hit=109
+Planning Time: 0.336 ms
+Execution Time: 46.585 ms

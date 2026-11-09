@@ -1,0 +1,10 @@
+Sort  (cost=5.52..5.78 rows=104 width=31) (actual time=0.056..0.058 rows=104 loops=1)
+  Sort Key: month, total_value DESC
+  Sort Method: quicksort  Memory: 31kB
+  Buffers: shared hit=7
+  ->  Seq Scan on mv_monthly_region_debits  (cost=0.00..2.04 rows=104 width=31) (actual time=0.008..0.011 rows=104 loops=1)
+        Buffers: shared hit=1
+Planning:
+  Buffers: shared hit=92
+Planning Time: 0.263 ms
+Execution Time: 0.118 ms

@@ -1,0 +1,8 @@
+Q1_account_statement,0.123
+Q2_customer_statement_join,0.471
+Q3_daily_report_function,5.647
+Q3_daily_report_rewritten,0.155
+Q4_monthly_region_report,119.973
+Q4b_monthly_region_report_mv,0.128
+Q5_top_customers_window,69.310
+Q6_fraud_velocity,0.372

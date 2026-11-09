@@ -1,0 +1,40 @@
+Sort  (cost=41933.67..42320.74 rows=154826 width=54) (actual time=119.628..119.634 rows=104 loops=1)
+  Sort Key: (date_trunc('month'::text, t.created_at)), (sum(t.amount)) DESC
+  Sort Method: quicksort  Memory: 31kB
+  Buffers: shared hit=2327
+  ->  HashAggregate  (cost=19158.69..23295.45 rows=154826 width=54) (actual time=119.498..119.571 rows=104 loops=1)
+        Group Key: r.region_name, date_trunc('month'::text, t.created_at)
+        Planned Partitions: 8  Batches: 1  Memory Usage: 849kB
+        Buffers: shared hit=2321
+        ->  Hash Join  (cost=170.39..7256.44 rows=154826 width=22) (actual time=0.689..91.192 rows=155204 loops=1)
+              Hash Cond: (c.region_id = r.region_id)
+              Buffers: shared hit=2321
+              ->  Hash Join  (cost=169.21..6246.48 rows=154826 width=18) (actual time=0.664..62.469 rows=155204 loops=1)
+                    Hash Cond: (a.customer_id = c.customer_id)
+                    Buffers: shared hit=2320
+                    ->  Hash Join  (cost=98.21..5768.20 rows=154826 width=20) (actual time=0.368..45.467 rows=155204 loops=1)
+                          Hash Cond: (t.account_id = a.account_id)
+                          Buffers: shared hit=2294
+                          ->  Seq Scan on transactions t  (cost=0.00..5263.00 rows=154826 width=20) (actual time=0.006..24.939 rows=155204 loops=1)
+                                Filter: ((direction = 'DR'::bpchar) AND ((status)::text = 'SUCCESS'::text))
+                                Rows Removed by Filter: 44796
+                                Buffers: shared hit=2263
+                          ->  Hash  (cost=60.87..60.87 rows=2987 width=8) (actual time=0.350..0.351 rows=2987 loops=1)
+                                Buckets: 4096  Batches: 1  Memory Usage: 149kB
+                                Buffers: shared hit=31
+                                ->  Seq Scan on accounts a  (cost=0.00..60.87 rows=2987 width=8) (actual time=0.006..0.191 rows=2987 loops=1)
+                                      Buffers: shared hit=31
+                    ->  Hash  (cost=46.00..46.00 rows=2000 width=6) (actual time=0.289..0.290 rows=2000 loops=1)
+                          Buckets: 2048  Batches: 1  Memory Usage: 91kB
+                          Buffers: shared hit=26
+                          ->  Seq Scan on customers c  (cost=0.00..46.00 rows=2000 width=6) (actual time=0.006..0.166 rows=2000 loops=1)
+                                Buffers: shared hit=26
+              ->  Hash  (cost=1.08..1.08 rows=8 width=8) (actual time=0.012..0.012 rows=8 loops=1)
+                    Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                    Buffers: shared hit=1
+                    ->  Seq Scan on regions r  (cost=0.00..1.08 rows=8 width=8) (actual time=0.008..0.009 rows=8 loops=1)
+                          Buffers: shared hit=1
+Planning:
+  Buffers: shared hit=553
+Planning Time: 1.434 ms
+Execution Time: 119.973 ms
