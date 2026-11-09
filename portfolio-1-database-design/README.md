@@ -142,3 +142,14 @@ psql -d paynaija -f sql/01_schema.sql
 psql -d paynaija -f sql/02_seed.sql
 psql -d paynaija -f sql/03_constraint_tests.sql
 ```
+
+## 7. Screenshots from my environment
+
+![Constraint tests](screenshots/constraint_test.png)
+*All 7 invalid operations rejected by PostgreSQL on my laptop.*
+
+![pgAdmin tables](screenshots/pgadmin_tables.png)
+*The 10 PayNaija tables in pgAdmin 4.*
+
+![Customer data](screenshots/pgadmin_customers.png)
+*Sample customer records loaded by 02_seed.sql.*
