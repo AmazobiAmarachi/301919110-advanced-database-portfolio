@@ -1,0 +1,262 @@
+{
+  _id: 3,
+  name: {
+    first: 'Halima',
+    last: 'Adeyemi'
+  },
+  email: 'halima.adeyemi3@mail.ng',
+  phone: '+2347000000003',
+  dob: '1967-06-10',
+  region: 'Lagos',
+  kyc_tier: 3,
+  kyc: [
+    {
+      type: 'NIN',
+      ref: '10000023757',
+      status: 'VERIFIED',
+      verified_at: '2026-09-11T17:53:07.752943+01:00'
+    }
+  ],
+  accounts: [
+    {
+      account_id: 3,
+      number: '3000000003',
+      type: 'WALLET',
+      balance: 57569.77,
+      status: 'ACTIVE'
+    },
+    {
+      account_id: 2002,
+      number: '4000000003',
+      type: 'SAVINGS',
+      balance: 1974675.21,
+      status: 'ACTIVE'
+    }
+  ],
+  devices: [
+    {
+      os: 'Android',
+      model: 'TECNO Spark'
+    },
+    {
+      os: 'Web',
+      browser: 'Chrome'
+    }
+  ],
+  preferences: {
+    language: 'English'
+  },
+  created_at: '2026-09-10T17:53:07.752943+01:00'
+}
+{
+  _id: 3,
+  name: {
+    first: 'Halima',
+    last: 'Adeyemi'
+  },
+  devices: [
+    {
+      os: 'Android',
+      model: 'TECNO Spark'
+    },
+    {
+      os: 'Web',
+      browser: 'Chrome'
+    },
+    {
+      os: 'Android',
+      model: 'Infinix Hot 40'
+    }
+  ],
+  bvn_linked: true,
+  next_of_kin: {
+    name: 'Emeka Adeyemi',
+    phone: '+2348030000000'
+  }
+}
+93
+[
+  {
+    _id: 'Lagos',
+    customers: 935,
+    total_balance: 228850149.39
+  },
+  {
+    _id: 'Oyo',
+    customers: 173,
+    total_balance: 44312119.74
+  },
+  {
+    _id: 'Kaduna',
+    customers: 175,
+    total_balance: 43755041.55
+  },
+  {
+    _id: 'Kano',
+    customers: 178,
+    total_balance: 43141348.68
+  },
+  {
+    _id: 'Rivers',
+    customers: 178,
+    total_balance: 41698401.07
+  },
+  {
+    _id: 'Enugu',
+    customers: 173,
+    total_balance: 40433477.38
+  },
+  {
+    _id: 'Abuja FCT',
+    customers: 96,
+    total_balance: 25546885.2
+  },
+  {
+    _id: 'Anambra',
+    customers: 92,
+    total_balance: 22755982.259999998
+  }
+]
+[
+  {
+    _id: 19698,
+    account_id: 1450,
+    type: 'AIRTIME',
+    direction: 'DR',
+    amount: 98713.54,
+    status: 'SUCCESS',
+    channel: 'WEB',
+    merchant_id: null,
+    created_at: '2026-09-14T11:32:30.184406+01:00'
+  },
+  {
+    _id: 18331,
+    account_id: 1450,
+    type: 'AIRTIME',
+    direction: 'DR',
+    amount: 97238.9,
+    status: 'SUCCESS',
+    channel: 'USSD',
+    merchant_id: null,
+    created_at: '2026-09-04T23:12:16.085755+01:00'
+  },
+  {
+    _id: 7973,
+    account_id: 1450,
+    type: 'DEPOSIT',
+    direction: 'CR',
+    amount: 79259.33,
+    status: 'SUCCESS',
+    channel: 'USSD',
+    merchant_id: null,
+    created_at: '2026-08-28T01:11:45.137556+01:00'
+  },
+  {
+    _id: 17503,
+    account_id: 1450,
+    type: 'DEPOSIT',
+    direction: 'CR',
+    amount: 7732.85,
+    status: 'SUCCESS',
+    channel: 'USSD',
+    merchant_id: null,
+    created_at: '2026-05-27T07:14:20.253801+01:00'
+  },
+  {
+    _id: 16623,
+    account_id: 1450,
+    type: 'AIRTIME',
+    direction: 'DR',
+    amount: 11393.55,
+    status: 'SUCCESS',
+    channel: 'POS',
+    merchant_id: null,
+    created_at: '2026-05-07T09:36:16.785522+01:00'
+  }
+]
+{
+  executionSuccess: true,
+  nReturned: 7,
+  executionTimeMillis: 4,
+  totalKeysExamined: 0,
+  totalDocsExamined: 20000,
+  executionStages: {
+    stage: 'COLLSCAN',
+    filter: {
+      account_id: {
+        '$eq': 1450
+      }
+    },
+    nReturned: 7,
+    executionTimeMillisEstimate: 0,
+    works: 20001,
+    advanced: 7,
+    needTime: 19993,
+    needYield: 0,
+    saveState: 20,
+    restoreState: 20,
+    isEOF: 1,
+    direction: 'forward',
+    docsExamined: 20000
+  }
+}
+{
+  executionSuccess: true,
+  nReturned: 7,
+  executionTimeMillis: 0,
+  totalKeysExamined: 7,
+  totalDocsExamined: 7,
+  executionStages: {
+    stage: 'FETCH',
+    nReturned: 7,
+    executionTimeMillisEstimate: 0,
+    works: 8,
+    advanced: 7,
+    needTime: 0,
+    needYield: 0,
+    saveState: 0,
+    restoreState: 0,
+    isEOF: 1,
+    docsExamined: 7,
+    alreadyHasObj: 0,
+    inputStage: {
+      stage: 'IXSCAN',
+      nReturned: 7,
+      executionTimeMillisEstimate: 0,
+      works: 8,
+      advanced: 7,
+      needTime: 0,
+      needYield: 0,
+      saveState: 0,
+      restoreState: 0,
+      isEOF: 1,
+      keyPattern: {
+        account_id: 1,
+        created_at: -1
+      },
+      indexName: 'account_id_1_created_at_-1',
+      isMultiKey: false,
+      multiKeyPaths: {
+        account_id: [],
+        created_at: []
+      },
+      isUnique: false,
+      isSparse: false,
+      isPartial: false,
+      indexVersion: 2,
+      direction: 'forward',
+      indexBounds: {
+        account_id: [
+          '[1450, 1450]'
+        ],
+        created_at: [
+          '[MaxKey, MinKey]'
+        ]
+      },
+      keysExamined: 7,
+      seeks: 1,
+      dupsTested: 0,
+      dupsDropped: 0
+    }
+  }
+}

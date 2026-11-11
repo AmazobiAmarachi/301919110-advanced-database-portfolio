@@ -1,0 +1,14 @@
+ring, amounts
+[500, 600, 700, 800, 500], [250000.0, 245000.0, 240000.0, 235000.0]
+[600, 700, 800, 500, 600], [245000.0, 240000.0, 235000.0, 250000.0]
+[700, 800, 500, 600, 700], [240000.0, 235000.0, 250000.0, 245000.0]
+[800, 500, 600, 700, 800], [235000.0, 250000.0, 245000.0, 240000.0]
+device, customers_sharing, customers
+"DEV-7F3A-SHARED", 4, ["Ibrahim Abubakar", "Zainab Abubakar", "Bisi Okonkwo", "Fatima Bello"]
+device, sender, receiver
+"DEV-7F3A-SHARED", "Bisi Okonkwo", "Ibrahim Abubakar"
+"DEV-7F3A-SHARED", "Ibrahim Abubakar", "Zainab Abubakar"
+"DEV-7F3A-SHARED", "Zainab Abubakar", "Fatima Bello"
+"DEV-7F3A-SHARED", "Fatima Bello", "Bisi Okonkwo"
+money_path
+[500, 600, 700, 800]
