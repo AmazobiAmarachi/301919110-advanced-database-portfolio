@@ -1,0 +1,45 @@
+DROP TABLE IF EXISTS customers_frag CASCADE;
+psql:scripts/05_horizontal_fragmentation.sql:3: NOTICE:  table "customers_frag" does not exist, skipping
+DROP TABLE
+CREATE TABLE customers_frag (LIKE customers INCLUDING DEFAULTS) PARTITION BY LIST (region_id);
+CREATE TABLE
+CREATE TABLE customers_lagos     PARTITION OF customers_frag FOR VALUES IN (1);
+CREATE TABLE
+CREATE TABLE customers_north     PARTITION OF customers_frag FOR VALUES IN (2, 4, 7);
+CREATE TABLE
+CREATE TABLE customers_south     PARTITION OF customers_frag FOR VALUES IN (3, 5, 6, 8);
+CREATE TABLE
+INSERT INTO customers_frag SELECT * FROM customers;
+INSERT 0 2001
+ANALYZE customers_frag;
+ANALYZE
+SELECT tableoid::regclass AS fragment, count(*) FROM customers_frag GROUP BY 1 ORDER BY 1;
+    fragment     | count 
+-----------------+-------
+ customers_lagos |   935
+ customers_north |   450
+ customers_south |   616
+(3 rows)
+
+SELECT (SELECT count(*) FROM customers) AS original_rows, (SELECT count(*) FROM customers_frag) AS rows_in_all_fragments;
+ original_rows | rows_in_all_fragments 
+---------------+-----------------------
+          2001 |                  2001
+(1 row)
+
+EXPLAIN (COSTS OFF) SELECT count(*) FROM customers_frag WHERE region_id = 1;
+                    QUERY PLAN                    
+--------------------------------------------------
+ Aggregate
+   ->  Seq Scan on customers_lagos customers_frag
+         Filter: (region_id = 1)
+(3 rows)
+
+EXPLAIN (COSTS OFF) SELECT count(*) FROM customers_frag WHERE region_id IN (4, 7);
+                       QUERY PLAN                       
+--------------------------------------------------------
+ Aggregate
+   ->  Seq Scan on customers_north customers_frag
+         Filter: (region_id = ANY ('{4,7}'::integer[]))
+(3 rows)
+

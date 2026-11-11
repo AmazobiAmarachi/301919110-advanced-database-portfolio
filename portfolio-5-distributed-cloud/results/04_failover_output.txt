@@ -1,0 +1,41 @@
+### BEFORE: last transfer on primary and on replica
+ last_transfer_primary 
+-----------------------
+                   720
+(1 row)
+
+ last_transfer_replica | is_standby 
+-----------------------+------------
+                   720 | t
+(1 row)
+
+### Lagos primary crashes (docker kill = sudden power failure, no clean shutdown)
+paynaija_lagos_primary
+psql: error: connection to server at "localhost" (::1), port 5433 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+### Promote the Abuja standby to be the new primary
+ promoted 
+----------
+ t
+(1 row)
+
+ is_standby 
+------------
+ f
+(1 row)
+
+### Service continues: a transfer is processed on the NEW primary
+Timing is on.
+CALL
+Time: 7.611 ms
+ transfer_id | from_account | to_account | amount  | status  |          created_at           
+-------------+--------------+------------+---------+---------+-------------------------------
+         721 |         1450 |       1451 | 2500.00 | SUCCESS | 2026-11-11 23:47:02.600336+00
+(1 row)
+
+### No committed data was lost
+ customers | transfers | total_balances 
+-----------+-----------+----------------
+      2001 |       719 |  1475566732.27
+(1 row)
+

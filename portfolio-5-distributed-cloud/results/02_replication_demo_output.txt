@@ -1,0 +1,46 @@
+### [PRIMARY - Lagos :5433] connected standbys
+SELECT application_name, state, sync_state, sent_lsn, replay_lsn, replay_lag FROM pg_stat_replication;
+-[ RECORD 1 ]----+----------------
+application_name | abuja_standby
+state            | streaming
+sync_state       | async
+sent_lsn         | 0/4A3E900
+replay_lsn       | 0/4A3E900
+replay_lag       | 00:00:00.002417
+
+### [REPLICA - Abuja :5434] am I a standby?
+SELECT pg_is_in_recovery() AS is_standby, pg_last_wal_replay_lsn() AS replayed_up_to;
+ is_standby | replayed_up_to 
+------------+----------------
+ t          | 0/4A3E900
+(1 row)
+
+### [PRIMARY] register a new customer
+INSERT INTO customers(first_name,last_name,email,phone,date_of_birth,region_id,kyc_tier)
+         VALUES ('Ada','Replica','ada.replica@mail.ng','+2348090000001','1995-03-15',2,2) RETURNING customer_id, created_at;
+ customer_id |          created_at           
+-------------+-------------------------------
+        2007 | 2026-11-11 23:43:47.708383+00
+(1 row)
+
+INSERT 0 1
+### [REPLICA] the same row is already readable on the standby
+SELECT customer_id, first_name, last_name, email, created_at FROM customers WHERE email='ada.replica@mail.ng';
+ customer_id | first_name | last_name |        email        |          created_at           
+-------------+------------+-----------+---------------------+-------------------------------
+        2007 | Ada        | Replica   | ada.replica@mail.ng | 2026-11-11 23:43:47.708383+00
+(1 row)
+
+### [REPLICA] writes are rejected (read-only hot standby)
+UPDATE accounts SET balance = 0 WHERE account_id = 1;
+ERROR:  cannot execute UPDATE in a read-only transaction
+### Row counts match on both sites
+primary  : 2001 customers, 201438 transactions
+replica  : 2001 customers, 201438 transactions
+### [REPLICA] replication delay
+SELECT now() - pg_last_xact_replay_timestamp() AS replication_delay;
+ replication_delay 
+-------------------
+ 00:00:02.025339
+(1 row)
+

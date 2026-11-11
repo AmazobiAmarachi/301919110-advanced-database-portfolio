@@ -1,0 +1,21 @@
+digraph A {
+  graph [rankdir=LR, fontname="Helvetica", bgcolor="white", pad=0.3, nodesep=0.4, ranksep=0.7, compound=true];
+  node [fontname="Helvetica", fontsize=10, shape=box, style="rounded,filled", fillcolor="#ebf4ff", color="#2b6cb0"];
+  edge [fontname="Helvetica", fontsize=9, color="#4a5568"];
+  app [label="PayNaija mobile app\n/ USSD / POS", fillcolor="#fefcbf", color="#b7791f"];
+  api [label="API servers\n(stateless)", fillcolor="#fefcbf", color="#b7791f"];
+  redis [label="Redis\nsessions · rate limits · cache", fillcolor="#fed7d7", color="#c53030"];
+  subgraph cluster_lagos { label="Lagos data centre (primary)"; style="rounded"; color="#2b6cb0"; fontname="Helvetica-Bold"; fontsize=11;
+    pri [label="PostgreSQL 16 PRIMARY :5433\naccounts · transfers · ledger\n(ACID, read/write)"]; }
+  subgraph cluster_abuja { label="Abuja data centre (standby)"; style="rounded"; color="#2f855a"; fontname="Helvetica-Bold"; fontsize=11;
+    rep [label="PostgreSQL 16 HOT STANDBY :5434\nread-only replica\n(reports, failover target)", fillcolor="#f0fff4", color="#2f855a"]; }
+  mongo [label="MongoDB replica set\ncustomer profiles / KYC documents", fillcolor="#f0fff4", color="#2f855a"];
+  neo [label="Neo4j\nfraud graph", fillcolor="#faf5ff", color="#6b46c1"];
+  app -> api [label="TLS 1.3"];
+  api -> redis;
+  api -> pri [label="writes + OLTP reads"];
+  api -> rep [label="read-only reports", style=dashed];
+  pri -> rep [label="WAL streaming\nsync or async", color="#2f855a", penwidth=1.6];
+  api -> mongo [label="profile reads"];
+  pri -> neo [label="nightly transfer export", style=dotted];
+}

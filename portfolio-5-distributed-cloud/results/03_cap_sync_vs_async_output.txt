@@ -1,0 +1,44 @@
+### STEP 1 - switch to SYNCHRONOUS replication (a commit waits until Abuja confirms)
+ application_name | sync_state 
+------------------+------------
+ abuja_standby    | sync
+(1 row)
+
+### STEP 2 - partition: the Abuja replica becomes unreachable
+paynaija_abuja_replica
+### STEP 3 - a customer tries to deposit N5,000 on the Lagos primary
+after 5 seconds the COMMIT has still not returned - the session is waiting for the standby:
+ pid | state  | wait_event_type | wait_event |   waiting_for   |                            query                             
+-----+--------+-----------------+------------+-----------------+--------------------------------------------------------------
+ 752 | active | IPC             | SyncRep    | 00:00:05.140048 | UPDATE accounts SET balance = balance + 5000 WHERE account_i
+(1 row)
+
+operator cancels the wait:
+WARNING:  canceling wait for synchronous replication due to user request
+DETAIL:  The transaction has already committed locally, but might not have been replicated to the standby.
+UPDATE 1
+=> CONSISTENCY chosen over AVAILABILITY (CP): the system would rather block than acknowledge
+   a write that exists in only one data centre.
+### STEP 4 - switch to ASYNCHRONOUS replication and repeat the write during the partition
+Timing is on.
+UPDATE 1
+Time: 5.466 ms
+=> AVAILABILITY chosen (AP-style): the write succeeds immediately, but if Lagos failed now
+   before Abuja reconnects, this deposit could be lost (eventual consistency).
+### STEP 5 - partition heals: replica restarts and catches up automatically
+paynaija_abuja_replica
+ primary_balance 
+-----------------
+        83818.09
+(1 row)
+
+ replica_balance 
+-----------------
+        83818.09
+(1 row)
+
+ application_name |   state   | sync_state 
+------------------+-----------+------------
+ abuja_standby    | streaming | async
+(1 row)
+
