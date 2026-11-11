@@ -1,0 +1,48 @@
+redis> HSET session:9f2c1a customer_id 1450 device Android-TECNO-Spark ip 102.89.33.10 kyc_tier 2
+4
+redis> EXPIRE session:9f2c1a 900
+1
+redis> HGETALL session:9f2c1a
+customer_id
+1450
+device
+Android-TECNO-Spark
+ip
+102.89.33.10
+kyc_tier
+2
+redis> TTL session:9f2c1a
+899
+redis> INCR pinfail:1450
+attempt 1 -> allowed (count=1)
+redis> INCR pinfail:1450
+attempt 2 -> allowed (count=2)
+redis> INCR pinfail:1450
+attempt 3 -> allowed (count=3)
+redis> INCR pinfail:1450
+attempt 4 -> BLOCKED (count=4)
+redis> TTL pinfail:1450
+298
+redis> SET balance:acct:1450 128450.75 EX 30
+OK
+redis> GET balance:acct:1450
+128450.75
+redis> DEL balance:acct:1450
+1
+redis> GET balance:acct:1450
+
+redis> ZINCRBY merchants:sales:today 15000 Merchant 7
+15000
+redis> ZINCRBY merchants:sales:today 42000 Merchant 12
+42000
+redis> ZINCRBY merchants:sales:today 8000 Merchant 3
+8000
+redis> ZINCRBY merchants:sales:today 30000 Merchant 7
+45000
+redis> ZREVRANGE merchants:sales:today 0 2 WITHSCORES
+Merchant 7
+45000
+Merchant 12
+42000
+Merchant 3
+8000
