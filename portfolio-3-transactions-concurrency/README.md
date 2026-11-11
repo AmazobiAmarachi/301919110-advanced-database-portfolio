@@ -146,3 +146,27 @@ for d in 05_lost_update 06_for_update 07_repeatable_read 08_nonrepeatable_read_c
 bash run_stress_test.sh | tee results/10_stress_test_output.txt
 ```
 Session outputs: `results/<demo>_sessionA.txt`, `results/<demo>_sessionB.txt`, `results/<demo>_final.txt`.
+
+## Part C: Fintech operations required by the case study
+
+### Demo 11: Reverse a completed transfer ([`sql/11_reverse_transfer.sql`](sql/11_reverse_transfer.sql))
+A committed transaction can never be "un-committed" (**durability**), so a disputed or mistaken transfer is reversed with a new **compensating transaction**. The stored procedure `reverse_transfer()` locks the transfer row and both accounts (lowest account_id first, the same deadlock-prevention rule as `transfer_funds()`), checks that the recipient still has the funds, moves the money back, posts two new ledger rows, marks the transfer `REVERSED` and writes the reason to the audit log.
+
+![Reverse transfer](screenshots/11_reverse_transfer.png)
+
+The full history is kept (original transfer + reversal) rather than deleting rows, which is what auditors and regulators expect. Note that a transfer that *fails* part-way never needs reversing: atomicity (Demo 2) guarantees it leaves no trace.
+
+### Demo 12: Audit account balances ([`sql/12_audit_balances.sql`](sql/12_audit_balances.sql))
+Five double-entry consistency checks. Checks 1–2 should return no rows, check 3 a zero difference, and check 4 zero counts.
+
+| Check | What it verifies | My result |
+|---|---|---|
+| 1 | Every SUCCESS transfer has exactly one DR and one CR of equal amount | **0 rows** (no violations) |
+| 2 | Every REVERSED transfer nets to zero | **0 rows** |
+| 3 | Transfers move money but never create or destroy it | credits ₦62,000.00 = debits ₦62,000.00, **difference 0.00** |
+| 4 | No negative balances, no orphaned accounts | **0 / 0** |
+| 5 | Audit trail of every balance change on account 101 (who, when, old → new) | shown below |
+
+![Audit balances](screenshots/12_audit_balances.png)
+
+The ₦62,000 total matches the transfers made in this portfolio: 320 load-test transfers × ₦100 (₦32,000) + Demo 1 (₦10,000) + Demo 4 (₦5,000) + the ₦7,500 transfer and its reversal (₦15,000). The CHECK constraints, the trigger-based audit log and the ACID transactions together keep the ledger provably consistent even after hundreds of concurrent transfers.
