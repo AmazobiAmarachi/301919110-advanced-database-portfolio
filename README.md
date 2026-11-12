@@ -1,8 +1,8 @@
 # Advanced Database Systems Portfolio: PayNaija Wallet
 
 **Course:** MIT 8103 Advanced Database Systems, MIVA Open University (2026/2027, First Semester CA)
-**Student:** Amazobi Amarachi · Student ID: 301919110
-**Repository:** `advanced-database-portfolio`
+**Student:** Amazobi Amarachi · **Student ID:** 301919110
+**Repository:** https://github.com/AmazobiAmarachi/advanced-database-portfolio
 
 ## Selected case study
 
@@ -13,44 +13,44 @@
 | **Nature of the business** | Retail digital payments: wallets, savings, P2P transfers, merchant (POS) payments |
 | **Users of the database** | Customers (through the app), customer-support staff, compliance/KYC officers, administrators, fraud analysts, management (reports) |
 | **Major data stored** | Customers, KYC documents, accounts and balances, cards, merchants, transfers, ledger transactions, regions, staff, audit log |
-| **Key operations** | Register customer and verify KYC · open account · deposit/withdraw · **transfer funds** · **reverse failed transfers** · generate statements · audit balances · detect fraud · regional management reports |
+| **Key operations** | Register customer and verify KYC · open account · deposit/withdraw · **transfer funds** · **reverse transfers** · generate statements · **audit account balances** · detect fraud · regional management reports |
 
 Fintech was chosen because it stresses every topic in the course: strict **ACID** transactions for money, heavy **query workloads** on a growing ledger, **semi-structured** KYC data suited to NoSQL, **highly connected** transfer data suited to graphs, and **high-availability** requirements across data centres.
 
-## Portfolio index
+## Portfolio index (all results measured on my own laptop)
 
 | # | Folder | What it demonstrates | Key result |
 |---|---|---|---|
-| 1 | [`portfolio-1-database-design`](portfolio-1-database-design/) | ER model, 10-table 3NF schema, constraints, normalisation, RBAC, audit trigger | 7/7 invalid operations rejected by constraints |
-| 2 | [`portfolio-2-query-optimisation`](portfolio-2-query-optimisation/) | 7 queries, `EXPLAIN ANALYZE` before/after, B+ tree, partial and composite indexes, query rewrite, materialised view | Statement query 10.9 ms → 0.16 ms (≈67×); report 146 ms → 0.11 ms |
-| 3 | [`portfolio-3-transactions-concurrency`](portfolio-3-transactions-concurrency/) | COMMIT/ROLLBACK/SAVEPOINT, stored procedure, lost update, isolation levels, deadlock, load test | Naive transfers: 83% deadlock failures; ordered locking: 0% |
-| 4 | [`portfolio-4-nosql`](portfolio-4-nosql/) | Redis key-value (live), MongoDB document model, Neo4j fraud graph | Fraud ring 500→600→700→800→500 and a shared device detected |
-| 5 | [`portfolio-5-distributed-cloud`](portfolio-5-distributed-cloud/) | Streaming replication, sync vs async (CAP), failover, horizontal fragmentation, cloud design | Primary crash → standby promoted, zero committed data lost |
+| 1 | [`portfolio-1-database-design`](portfolio-1-database-design/) | ER model, 10-table 3NF/BCNF schema, constraints, normalisation, RBAC, audit trigger | 7/7 invalid operations rejected by constraints; 200,000-row ledger loaded |
+| 2 | [`portfolio-2-query-optimisation`](portfolio-2-query-optimisation/) | 7 queries, `EXPLAIN ANALYZE` before/after, composite and partial B+ tree indexes, query rewrite, materialised view | Account statement 45.05 ms → 0.12 ms (≈366×); regional report 119 ms → 0.13 ms via materialised view |
+| 3 | [`portfolio-3-transactions-concurrency`](portfolio-3-transactions-concurrency/) | COMMIT/ROLLBACK/SAVEPOINT, lost update + fixes, isolation levels, deadlock, pgbench load test, transfer reversal, balance audit | Naive transfers: 79.4% deadlock failures (0.38 tps); ordered locking: 0% (833 tps); ledger audit difference ₦0.00 |
+| 4 | [`portfolio-4-nosql`](portfolio-4-nosql/) | Redis key-value, MongoDB document model, Neo4j fraud-detection graph (all in Docker) | COLLSCAN 20,000 docs → IXSCAN 7 docs; fraud ring 500→600→700→800→500 found on a shared device |
+| 5 | [`portfolio-5-distributed-cloud`](portfolio-5-distributed-cloud/) | Streaming replication (Lagos → Abuja), sync vs async (CAP), failover, horizontal fragmentation, cloud design | Replay lag 2.4 ms; sync write blocked during partition (CP); primary killed → standby promoted, no committed data lost |
 
 ## Environment
 
 | Component | Version | Use |
 |---|---|---|
-| PostgreSQL | 16.15 | Relational database, replication (P1, P2, P3, P5) |
-| pgbench | 16.15 | Concurrency load test (P3) |
-| Redis | 7.x | Key-value store (P4) |
-| MongoDB / mongosh | 7.x | Document store (P4) |
-| Neo4j | 5.x | Graph database (P4) |
-| Graphviz | 2.x | ER and architecture diagrams |
-| Docker Desktop | optional | Replica set on Windows/macOS (P5) |
+| Windows 11 + MSYS2 UCRT64 terminal | n/a | Development environment |
+| PostgreSQL + pgAdmin 4 | 16 | Relational database (P1, P2, P3); pgbench load test (P3) |
+| Docker Desktop | 29.9.3 | Runs the NoSQL databases (P4) and the two-site replication cluster (P5) |
+| Redis | 7 (Docker) | Key-value store (P4) |
+| MongoDB / mongosh | 7 (Docker) | Document store (P4) |
+| Neo4j | 5 (Docker) | Graph database (P4) |
+| PostgreSQL | 16 (Docker) | Primary + streaming replica (P5) |
+| Git / GitHub | n/a | Version control, progressive commits |
 
 ## How to reproduce
 
 ```bash
 createdb paynaija
 psql -d paynaija -f portfolio-1-database-design/sql/01_schema.sql
-psql -d paynaija -f portfolio-1-database-design/sql/02_seed.sql            # ~200,000 ledger rows
+psql -d paynaija -f portfolio-1-database-design/sql/02_seed.sql            # ~200,000 ledger rows (synthetic)
 psql -d paynaija -f portfolio-1-database-design/sql/03_constraint_tests.sql
-cd portfolio-2-query-optimisation && ./run_benchmark.sh before && psql -d paynaija -f sql/02_create_indexes.sql && ./run_benchmark.sh after
 ```
-Each portfolio folder has its own README with step-by-step instructions, outputs and analysis.
+Each portfolio folder has its own README with step-by-step instructions, outputs, screenshots and analysis. All data is synthetic, generated by `02_seed.sql`; no real personal data was used.
 
 ## Documentation
-- `docs/Amazobi_Amarachi_Documentation.pdf`: the 2–3 page LMS submission
-- `docs/Amazobi_Amarachi_Portfolio_Evidence.pdf`: full evidence pack (all outputs and plans)
-- `docs/AI_USE_DECLARATION.md`
+- [`docs/Amazobi_Amarachi_301919110_Documentation.pdf`](docs/): the 3-page LMS documentation
+- [`docs/Amazobi_Amarachi_301919110_PortfolioEvidence.pdf`](docs/): full evidence pack (every portfolio's README, outputs and screenshots)
+- [`docs/AI_USE_DECLARATION.md`](docs/AI_USE_DECLARATION.md)

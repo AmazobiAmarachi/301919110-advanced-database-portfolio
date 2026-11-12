@@ -27,7 +27,7 @@ Script: [`redis/redis_demo.sh`](redis/redis_demo.sh) · Output: [`results/redis_
 
 ![Redis demo](screenshots/redis_demo.png)
 
-Results: the session expired automatically after its 900-second TTL; PIN attempts 1–3 were allowed and **attempt 4 was BLOCKED**; the cached balance returned `(nil)` once it was invalidated after a transfer; and the sorted set ranked **Merchant 7 (₦45,000)** first.
+Results: the session was created with a 900-second TTL and was already counting down (`TTL` = 899 s), so Redis will delete it automatically with no clean-up job; PIN attempts 1–3 were allowed and **attempt 4 was BLOCKED** (the counter itself expires after 300 s, `TTL` = 298 s); the cached balance returned `(nil)` once it was invalidated after a transfer; and the sorted set ranked **Merchant 7 (₦45,000)** first.
 
 **Why it suits the workload.** Every operation is a single O(1) or O(log n) lookup by key, held in memory with sub-millisecond latency. TTL gives automatic expiry, which would need a scheduled cleanup job in SQL. `INCR` is **atomic**, so two simultaneous wrong-PIN attempts cannot both slip through, which matters from a security point of view. Redis gives no joins, no ad-hoc queries and limited durability, so it is used only for data that can be rebuilt. **Balances are never stored only in Redis.**
 
