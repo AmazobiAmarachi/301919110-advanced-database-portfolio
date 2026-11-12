@@ -2,7 +2,7 @@
 
 **Course:** MIT 8103 Advanced Database Systems, MIVA Open University (2026/2027, First Semester CA)
 **Student:** Amazobi Amarachi · Student ID: 301919110
-**Repository:** `advanced-database-portfolio` (private; assessor added as collaborator)
+**Repository:** `advanced-database-portfolio`
 
 ## Selected case study
 
