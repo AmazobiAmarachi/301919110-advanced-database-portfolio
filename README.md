@@ -1,8 +1,8 @@
-# Advanced Database Systems Portfolio: PayNaija Wallet
+# 301919110: Advanced Database Systems Portfolio (PayNaija Wallet)
 
 **Course:** MIT 8103 Advanced Database Systems, MIVA Open University (2026/2027, First Semester CA)
 **Student:** Amazobi Amarachi · **Student ID:** 301919110
-**Repository:** https://github.com/AmazobiAmarachi/advanced-database-portfolio
+**Repository:** https://github.com/AmazobiAmarachi/301919110-advanced-database-portfolio (public)
 
 ## Selected case study
 
